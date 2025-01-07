@@ -76,12 +76,6 @@ export class MlopsInfraStack extends cdk.Stack {
     // Grant Lambda permissions to read from the data bucket
     dataBucket.grantRead(triggerTrainingLambda);
 
-    // S3 Event Notification for triggering the Lambda function when new data is uploaded
-    dataBucket.addEventNotification(
-      s3.EventType.OBJECT_CREATED,
-      new s3_notifications.LambdaDestination(triggerTrainingLambda)
-    );
-
     // IAM permissions for Lambda to trigger ECS tasks and access S3
     triggerTrainingLambda.addToRolePolicy(
       new iam.PolicyStatement({
