@@ -40,7 +40,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
         run: |
-          cd ../ mlops-infra
+          cd ../mlops-infra
           npm install -g aws-cdk
           npm install
           cdk diff --context buildNumber=${{ github.run_number }}
