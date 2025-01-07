@@ -7,9 +7,10 @@ import os
 import sys
 
 # **Environment Variables**
-DATA_BUCKET_NAME = os.environ.get("DATA_BUCKET_NAME")  # S3 bucket name
+DATA_BUCKET_NAME = os.environ.get("DATA_BUCKET_NAME")  # S3 bucket name for CIFAR-10 data
 MODEL_BUCKET_NAME = os.environ.get("MODEL_BUCKET_NAME")  # S3 bucket for model output
-MODEL_SAVE_PATH = "/tmp/final_model_cloud.pth"
+MODEL_NAME = os.environ.get("MODEL_NAME", "default_model.pth")  # Model name
+MODEL_SAVE_PATH = f"/tmp/{MODEL_NAME}"  # Save path for the trained model
 
 # **S3 Client**
 s3_client = boto3.client('s3')
@@ -67,7 +68,7 @@ device = torch.device("cpu")
 log_message(f"Using device: {device}")
 
 # **Training Loop**
-def train_model(epochs=1):
+def train_model(epochs=10):
     log_message("Starting training process...")
     # Download dataset from S3
     download_cifar10_from_s3()
@@ -116,8 +117,8 @@ def train_model(epochs=1):
     try:
         torch.save(model.state_dict(), MODEL_SAVE_PATH)
         log_message(f"Model saved locally at: {MODEL_SAVE_PATH}")
-        log_message(f"Uploading model to S3: {MODEL_BUCKET_NAME}/trained_models/final_model_cloud.pth")
-        s3_client.upload_file(MODEL_SAVE_PATH, MODEL_BUCKET_NAME, "trained_models/final_model_cloud.pth")
+        log_message(f"Uploading model to S3: {MODEL_BUCKET_NAME}/trained_models/{MODEL_NAME}")
+        s3_client.upload_file(MODEL_SAVE_PATH, MODEL_BUCKET_NAME, f"trained_models/{MODEL_NAME}")
         log_message("Model upload completed successfully.")
     except Exception as e:
         log_message(f"Error saving/uploading model: {e}")
