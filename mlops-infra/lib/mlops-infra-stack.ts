@@ -19,7 +19,7 @@ export class MlopsInfraStack extends cdk.Stack {
 
     // S3 bucket for data
     const dataBucket = new s3.Bucket(this, "DataBucket", {
-      bucketName: "data-bucket",
+      bucketName: "data-bucket-resche",
       versioned: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
@@ -27,7 +27,7 @@ export class MlopsInfraStack extends cdk.Stack {
 
     // S3 bucket for models
     const modelBucket = new s3.Bucket(this, "ModelBucket", {
-      bucketName: "model-bucket",
+      bucketName: "model-bucket-resche",
       versioned: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
@@ -51,17 +51,15 @@ export class MlopsInfraStack extends cdk.Stack {
       image: ecs.ContainerImage.fromEcrRepository(repository),
       gpuCount: 0,
       logging: ecs.LogDrivers.awsLogs({ streamPrefix: 'Cifar10Training' }),
+      environment: {
+        // Pass environment variables to the container
+        DATA_BUCKET_NAME: dataBucket.bucketName,
+        MODEL_BUCKET_NAME: modelBucket.bucketName,
+        S3_OBJECT_KEY: "cifar-10-batches-py/", 
+      },
     });
 
     container.addPortMappings({ containerPort: 80 });
-
-    // ECS Fargate Service
-    const fargateService = new ecs.FargateService(this, 'FargateService', {
-      cluster: cluster,
-      taskDefinition: taskDef,
-      platformVersion: ecs.FargatePlatformVersion.VERSION1_4,
-      assignPublicIp: true,
-    });
 
     // Lambda function to trigger ECS tasks
     const triggerTrainingLambda = new lambda.Function(this, "RetrainLambda", {
