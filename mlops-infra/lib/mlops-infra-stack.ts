@@ -85,11 +85,19 @@ export class MlopsInfraStack extends cdk.Stack {
       })
     );
 
+     // Custom PyTorch Lambda layer
+     const pytorchLayer = new lambda.LayerVersion(this, "PyTorchLayer", {
+      code: lambda.Code.fromBucket(modelBucket, "layers/pytorch-layer.zip"),
+      compatibleRuntimes: [lambda.Runtime.PYTHON_3_9],
+      description: "Custom PyTorch Lambda Layer",
+    });
+
     // Lambda Function for inference
     const inferenceLambda = new lambda.Function(this, "InferenceLambda", {
       runtime: lambda.Runtime.PYTHON_3_9,
       code: lambda.Code.fromAsset("lambda"), 
       handler: "predict.lambda_handler", 
+      layers: [pytorchLayer],
       environment: {
         MODEL_BUCKET_NAME: modelBucket.bucketName, 
       },
