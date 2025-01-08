@@ -6,7 +6,6 @@ import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as ecr from "aws-cdk-lib/aws-ecr";
 import * as iam from "aws-cdk-lib/aws-iam";
 
-
 export class MlopsInfraStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -41,7 +40,9 @@ export class MlopsInfraStack extends cdk.Stack {
     });
 
     // ECR Repository for the training Docker image
-    const repository = ecr.Repository.fromRepositoryName(this, "EcrRepository", "mlops-repository");
+    const repository = new ecr.Repository(this, "ECRRepo", {
+      repositoryName: "ecr-repo",
+    });
 
     // ECS Task Definition for Fargate
     const taskDef = new ecs.FargateTaskDefinition(this, "TaskDef", {
@@ -74,7 +75,11 @@ export class MlopsInfraStack extends cdk.Stack {
           "ecr:BatchGetImage",
           "ecr:GetAuthorizationToken",
         ],
-        resources: [`${dataBucket.bucketArn}/*`, `${modelBucket.bucketArn}/*`, repository.repositoryArn],
+        resources: [
+          `${dataBucket.bucketArn}/*`,
+          `${modelBucket.bucketArn}/*`,
+          repository.repositoryArn,
+        ],
       })
     );
   }
