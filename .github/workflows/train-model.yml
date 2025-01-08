@@ -26,12 +26,12 @@ jobs:
       - name: Build Docker Image
         run: |
           cd ml-code
-          docker build -t 905418307151.dkr.ecr.us-east-1.amazonaws.com/mlopsinfrastack-ecrrepository4d7b3ee1-mhonmkqlgdt6:${{ github.run_number }} .
+          docker build -t 905418307151.dkr.ecr.us-east-1.amazonaws.com/ml-ecr-repo:${{ github.run_number }} .
 
       # Push Docker Image
       - name: Push Docker Image
         run: |
-          docker push 905418307151.dkr.ecr.us-east-1.amazonaws.com/mlopsinfrastack-ecrrepository4d7b3ee1-mhonmkqlgdt6:${{ github.run_number }}
+          docker push 905418307151.dkr.ecr.us-east-1.amazonaws.com/ml-ecr-repo:${{ github.run_number }}
 
       # CDK Diff
       - name: CDK Diff
