@@ -23,15 +23,15 @@ jobs:
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 905418307151.dkr.ecr.us-east-1.amazonaws.com
 
       # Build Docker Image
-      - name: Build Docker Image
-        run: |
-          cd ml-code
-          docker build -t 905418307151.dkr.ecr.us-east-1.amazonaws.com/ml-ecr-repo:${{ github.run_number }} .
+    #   - name: Build Docker Image
+    #     run: |
+    #       cd ml-code
+    #       docker build -t 905418307151.dkr.ecr.us-east-1.amazonaws.com/ml-ecr-repo:${{ github.run_number }} .
 
       # Push Docker Image
-      - name: Push Docker Image
-        run: |
-          docker push 905418307151.dkr.ecr.us-east-1.amazonaws.com/ml-ecr-repo:${{ github.run_number }}
+    #   - name: Push Docker Image
+    #     run: |
+    #       docker push 905418307151.dkr.ecr.us-east-1.amazonaws.com/ml-ecr-repo:${{ github.run_number }}
 
       # CDK Diff
       - name: CDK Diff
@@ -68,24 +68,24 @@ jobs:
           cdk deploy --require-approval never --context buildNumber=${{ github.run_number }}
 
       # Trigger ECS task to run model training
-      - name: Trigger ECS Task
-        id: trigger_ecs_task
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
-        run: |
-          # Define ECS cluster and task definition
-          ECS_CLUSTER_NAME="MlopsInfraStack-EcsCluster97242B84-rv2ICQj10JF2"  # Your ECS cluster name
-          ECS_TASK_DEFINITION="MlopsInfraStackTaskDefDC2C1B7E"  # Your ECS task definition ARN
+    #   - name: Trigger ECS Task
+    #     id: trigger_ecs_task
+    #     env:
+    #       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #       AWS_DEFAULT_REGION: us-east-1
+    #     run: |
+    #       # Define ECS cluster and task definition
+    #       ECS_CLUSTER_NAME="MlopsInfraStack-EcsCluster97242B84-rv2ICQj10JF2"  # Your ECS cluster name
+    #       ECS_TASK_DEFINITION="MlopsInfraStackTaskDefDC2C1B7E"  # Your ECS task definition ARN
 
-          # Define the network configuration with subnets and security groups
-          NETWORK_CONFIGURATION="awsvpcConfiguration={subnets=[subnet-0f375205e758a7911,subnet-0110245c30dd05bfc,subnet-00638b2c72ec18d6b,subnet-08ae089f4905f0b9a,subnet-08cb823ffe3bb48d4,subnet-0aa3e1ca8b616b370],securityGroups=[sg-020f517716c8df28d],assignPublicIp=ENABLED}"
+    #       # Define the network configuration with subnets and security groups
+    #       NETWORK_CONFIGURATION="awsvpcConfiguration={subnets=[subnet-0f375205e758a7911,subnet-0110245c30dd05bfc,subnet-00638b2c72ec18d6b,subnet-08ae089f4905f0b9a,subnet-08cb823ffe3bb48d4,subnet-0aa3e1ca8b616b370],securityGroups=[sg-020f517716c8df28d],assignPublicIp=ENABLED}"
 
-          # Start the ECS task using the AWS CLI
-          TASK_RESULT=$(aws ecs run-task --cluster $ECS_CLUSTER_NAME --task-definition $ECS_TASK_DEFINITION --launch-type FARGATE --network-configuration "$NETWORK_CONFIGURATION")
+    #       # Start the ECS task using the AWS CLI
+    #       TASK_RESULT=$(aws ecs run-task --cluster $ECS_CLUSTER_NAME --task-definition $ECS_TASK_DEFINITION --launch-type FARGATE --network-configuration "$NETWORK_CONFIGURATION")
 
-          # Extract the task ID from the result
-          TASK_ID=$(echo $TASK_RESULT | jq -r '.tasks[0].taskArn')
+    #       # Extract the task ID from the result
+    #       TASK_ID=$(echo $TASK_RESULT | jq -r '.tasks[0].taskArn')
 
-          echo "ECS Task started with Task ID: $TASK_ID"
+    #       echo "ECS Task started with Task ID: $TASK_ID"
