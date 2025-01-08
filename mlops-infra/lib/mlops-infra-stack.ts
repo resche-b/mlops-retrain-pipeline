@@ -40,8 +40,8 @@ export class MlopsInfraStack extends cdk.Stack {
     });
 
     // ECR Repository for the training Docker image
-    const repository = new ecr.Repository(this, "ECRRepo", {
-      repositoryName: "ecr-repo",
+    const repository = new ecr.Repository(this, "MLECRRepo", {
+      repositoryName: "ml-ecr-repo",
     });
 
     // ECS Task Definition for Fargate
