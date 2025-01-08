@@ -5,6 +5,8 @@ import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as ecr from "aws-cdk-lib/aws-ecr";
 import * as iam from "aws-cdk-lib/aws-iam";
+import * as lambda from "aws-cdk-lib/aws-lambda";
+
 
 export class MlopsInfraStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -82,5 +84,29 @@ export class MlopsInfraStack extends cdk.Stack {
         ],
       })
     );
+
+    // Lambda Function for inference
+    const inferenceLambda = new lambda.Function(this, "InferenceLambda", {
+      runtime: lambda.Runtime.PYTHON_3_9,
+      code: lambda.Code.fromAsset("lambda"), 
+      handler: "predict.lambda_handler", 
+      environment: {
+        MODEL_BUCKET_NAME: modelBucket.bucketName, 
+      },
+      memorySize: 500, 
+      timeout: cdk.Duration.seconds(60), 
+    });
+
+    // IAM Permissions for Lambda to access S3 bucket
+    inferenceLambda.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["s3:ListBucket", "s3:GetObject"],
+        resources: [
+          modelBucket.bucketArn,
+          `${modelBucket.bucketArn}/*`,
+        ],
+      })
+    );
+
   }
 }
