@@ -87,7 +87,7 @@ export class MlopsInfraStack extends cdk.Stack {
 
      // Custom PyTorch Lambda layer
      const pytorchLayer = new lambda.LayerVersion(this, "PyTorchLayer", {
-      code: lambda.Code.fromBucket(modelBucket, "layers/pytorch-layer.zip"),
+      code: lambda.Code.fromBucket(modelBucket, "layers/pytorch-requirements.zip"),
       compatibleRuntimes: [lambda.Runtime.PYTHON_3_9],
       description: "Custom PyTorch Lambda Layer",
     });
