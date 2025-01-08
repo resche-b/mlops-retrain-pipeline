@@ -1,0 +1,5 @@
+boto3
+numpy==1.21.6
+Pillow==9.5.0
+torch==1.13.1
+torchvision==0.14.1

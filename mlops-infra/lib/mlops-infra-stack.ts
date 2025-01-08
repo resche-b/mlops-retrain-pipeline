@@ -85,18 +85,12 @@ export class MlopsInfraStack extends cdk.Stack {
       })
     );
 
-     // Custom PyTorch Lambda layer
-     const pytorchLayer = lambda.LayerVersion.fromLayerVersionArn(
-      this,
-      "PrebuiltPyTorchLayer",
-      "arn:aws:lambda:us-east-1:770693421928:layer:AWSLambda-PyTorch:38"
-    );
+     
     // Lambda Function for inference
     const inferenceLambda = new lambda.Function(this, "InferenceLambda", {
       runtime: lambda.Runtime.PYTHON_3_9,
-      code: lambda.Code.fromAsset("lambda"), 
+      code: lambda.Code. fromEcrImage(repository, {tag: "lambda"}), 
       handler: "predict.lambda_handler", 
-      layers: [pytorchLayer],
       environment: {
         MODEL_BUCKET_NAME: modelBucket.bucketName, 
       },
