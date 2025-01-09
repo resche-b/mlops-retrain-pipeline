@@ -95,7 +95,7 @@ export class MlopsInfraStack extends cdk.Stack {
         MODEL_BUCKET_NAME: modelBucket.bucketName, 
       },
       memorySize: 3000, 
-      timeout: cdk.Duration.seconds(60), 
+      timeout: cdk.Duration.seconds(61), 
     });
 
     // IAM Permissions for Lambda to access S3 bucket
