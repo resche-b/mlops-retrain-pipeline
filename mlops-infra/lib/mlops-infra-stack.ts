@@ -114,6 +114,12 @@ export class MlopsInfraStack extends cdk.Stack {
      const httpApi = new apigw.HttpApi(this, "HttpApi", {
       apiName: "MLOpsInferenceAPI",
       description: "HTTP API for image inference requests",
+      corsPreflight: {
+        allowOrigins: ["*"],  // Allow all origins (adjust as needed)
+        allowMethods: [apigw.CorsHttpMethod.POST],  // Allow POST requests
+        allowHeaders: ["Content-Type", "Authorization"],
+        maxAge: cdk.Duration.days(10),
+      },
     });
 
     // Create Lambda Integration

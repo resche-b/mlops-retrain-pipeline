@@ -28,7 +28,7 @@ const UploadForm = () => {
       setLoading(true);
       const base64Image = await convertToBase64(imageFile);
 
-      const response = await fetch("YOUR_API_ENDPOINT_URL", {
+      const response = await fetch("https://fmbqf81mde.execute-api.us-east-1.amazonaws.com/predict", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
