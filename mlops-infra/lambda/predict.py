@@ -74,9 +74,19 @@ print(f"[INFO] Model loaded successfully from {MODEL_PATH}")
 
 # **Lambda Handler Function**
 def lambda_handler(event, context):
+    print("[INFO] Received event:")
+    print(json.dumps(event, indent=4))
     try:
-        # Parse request body
-        body = json.loads(event['body']) if isinstance(event['body'], str) else event['body']
+        # Check if 'body' exists in the event
+        if 'body' in event:
+            body = json.loads(event['body']) if isinstance(event['body'], str) else event['body']
+        else:
+            raise ValueError("[ERROR] No 'body' key found in event!")
+
+        # Check for 'image' key in the body
+        if 'image' not in body:
+            raise ValueError("[ERROR] No 'image' key found in request body!")
+
         base64_image = body['image']  # Base64-encoded image string
         image_data = base64.b64decode(base64_image)
         image = Image.open(BytesIO(image_data))
