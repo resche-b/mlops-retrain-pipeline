@@ -1,6 +1,7 @@
 import base64
 import json
 import torch
+import torch.nn as nn
 from torchvision import transforms
 from PIL import Image
 from io import BytesIO
