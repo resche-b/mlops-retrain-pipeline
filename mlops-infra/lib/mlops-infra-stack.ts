@@ -142,15 +142,9 @@ export class MlopsInfraStack extends cdk.Stack {
     const frontendBucket = new s3.Bucket(this, "FrontendBucket", {
       websiteIndexDocument: "index.html",
       websiteErrorDocument: "index.html",
-      publicReadAccess: true,
+      publicReadAccess: false,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
-      blockPublicAccess: {
-        blockPublicAcls: false,
-        blockPublicPolicy: false,
-        ignorePublicAcls: false,
-        restrictPublicBuckets: false,
-      },
     });
 
     // CloudFront Origin Access Identity (OAI)
