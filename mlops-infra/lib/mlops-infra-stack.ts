@@ -112,8 +112,8 @@ export class MlopsInfraStack extends cdk.Stack {
       apiName: "MLOpsInferenceAPI",
       description: "HTTP API for image inference requests",
       corsPreflight: {
-        allowOrigins: ["*"], 
-        allowMethods: [apigw.CorsHttpMethod.POST], 
+        allowOrigins: ["*"],
+        allowMethods: [apigw.CorsHttpMethod.POST],
         allowHeaders: ["Content-Type", "Authorization"],
         maxAge: cdk.Duration.days(10),
       },
@@ -142,15 +142,15 @@ export class MlopsInfraStack extends cdk.Stack {
     const frontendBucket = new s3.Bucket(this, "FrontendBucket", {
       websiteIndexDocument: "index.html",
       websiteErrorDocument: "index.html",
-      publicReadAccess: false, 
-      removalPolicy: cdk.RemovalPolicy.DESTROY, 
+      publicReadAccess: true,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
       blockPublicAccess: {
         blockPublicAcls: false,
         blockPublicPolicy: false,
         ignorePublicAcls: false,
         restrictPublicBuckets: false,
-      }
+      },
     });
 
     // CloudFront Origin Access Identity (OAI)
@@ -163,30 +163,39 @@ export class MlopsInfraStack extends cdk.Stack {
       new iam.PolicyStatement({
         actions: ["s3:GetObject"],
         resources: [frontendBucket.arnForObjects("*")],
-        principals: [new iam.CanonicalUserPrincipal(cloudfrontOAI.cloudFrontOriginAccessIdentityS3CanonicalUserId)],
+        principals: [
+          new iam.CanonicalUserPrincipal(
+            cloudfrontOAI.cloudFrontOriginAccessIdentityS3CanonicalUserId
+          ),
+        ],
       })
     );
 
     // CloudFront distribution for the frontend
-    const distribution = new cloudfront.CloudFrontWebDistribution(this, "FrontendDistribution", {
-      originConfigs: [
-        {
-          s3OriginSource: {
-            s3BucketSource: frontendBucket,
-            originAccessIdentity: cloudfrontOAI,
-          },
-          behaviors: [
-            {
-              isDefaultBehavior: true,
-              viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-              allowedMethods: cloudfront.CloudFrontAllowedMethods.GET_HEAD,
-              compress: true,
+    const distribution = new cloudfront.CloudFrontWebDistribution(
+      this,
+      "FrontendDistribution",
+      {
+        originConfigs: [
+          {
+            s3OriginSource: {
+              s3BucketSource: frontendBucket,
+              originAccessIdentity: cloudfrontOAI,
             },
-          ],
-        },
-      ],
-      defaultRootObject: "index.html",
-    });
+            behaviors: [
+              {
+                isDefaultBehavior: true,
+                viewerProtocolPolicy:
+                  cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+                allowedMethods: cloudfront.CloudFrontAllowedMethods.GET_HEAD,
+                compress: true,
+              },
+            ],
+          },
+        ],
+        defaultRootObject: "index.html",
+      }
+    );
 
     // Output the CloudFront Distribution URL
     new cdk.CfnOutput(this, "CloudFrontURL", {
