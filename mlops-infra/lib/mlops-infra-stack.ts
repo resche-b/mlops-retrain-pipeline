@@ -8,6 +8,9 @@ import * as iam from "aws-cdk-lib/aws-iam";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as apigw from "aws-cdk-lib/aws-apigatewayv2";
 import * as integrations from "aws-cdk-lib/aws-apigatewayv2-integrations";
+import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
+
+
 
 export class MlopsInfraStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -140,6 +143,40 @@ export class MlopsInfraStack extends cdk.Stack {
       value: httpApi.apiEndpoint,
       description: "HTTP API Endpoint for inference",
     });
+
+     // S3 bucket for static website hosting
+     const frontendBucket = new s3.Bucket(this, "FrontendBucket", {
+      websiteIndexDocument: "index.html",
+      websiteErrorDocument: "index.html",
+      publicReadAccess: false, 
+      removalPolicy: cdk.RemovalPolicy.DESTROY, 
+      autoDeleteObjects: true, 
+    });
+
+  const identity = new cloudfront.OriginAccessIdentity(this, 'id')
+
+  frontendBucket .addToResourcePolicy(new iam.PolicyStatement({
+    actions: ["s3:GetObject"],
+    resources: [frontendBucket .arnForObjects("*")],
+    principals: [new iam.CanonicalUserPrincipal(identity.cloudFrontOriginAccessIdentityS3CanonicalUserId)]
+}))
+
+  const distribution = new cloudfront.CloudFrontWebDistribution(this,'cloudfront',{
+    originConfigs:[{
+      s3OriginSource:{
+        s3BucketSource: frontendBucket,
+        originAccessIdentity: identity
+      },
+      behaviors: [{
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        allowedMethods: cloudfront.CloudFrontAllowedMethods.GET_HEAD,
+        compress: true,
+        isDefaultBehavior: true
+      }]
+    }],
+  defaultRootObject:"index.html",
+  
+  })
 
   }
 }

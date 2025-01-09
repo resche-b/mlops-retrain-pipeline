@@ -1,5 +1,11 @@
 import React, { useState } from "react";
 
+// CIFAR-10 Class Labels
+const CIFAR10_LABELS = [
+  "airplane", "automobile", "bird", "cat", "deer",
+  "dog", "frog", "horse", "ship", "truck"
+];
+
 const UploadForm = () => {
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -12,7 +18,7 @@ const UploadForm = () => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result.split(",")[1]); 
+      reader.onload = () => resolve(reader.result.split(",")[1]); // Only the Base64 string
       reader.onerror = (error) => reject(error);
     });
   };
@@ -34,13 +40,15 @@ const UploadForm = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          image: base64Image, 
+          image: base64Image, // Sending Base64 string
         }),
       });
 
       const result = await response.json();
+      const label = CIFAR10_LABELS[result.prediction]; // Convert index to label
       console.log("Result:", result);
-      alert(`Prediction Result: ${result.prediction}`);
+
+      alert(`Prediction Result: ${label} (Class Index: ${result.prediction})`);
     } catch (error) {
       console.error("Error during submission:", error);
       alert("Error uploading the image.");
