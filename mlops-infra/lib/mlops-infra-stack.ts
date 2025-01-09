@@ -6,7 +6,8 @@ import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as ecr from "aws-cdk-lib/aws-ecr";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as lambda from "aws-cdk-lib/aws-lambda";
-
+import * as apigw from "aws-cdk-lib/aws-apigatewayv2";
+import * as integrations from "aws-cdk-lib/aws-apigatewayv2-integrations";
 
 export class MlopsInfraStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -108,6 +109,31 @@ export class MlopsInfraStack extends cdk.Stack {
         ],
       })
     );
+
+     // **API Gateway for Lambda**
+     const httpApi = new apigw.HttpApi(this, "HttpApi", {
+      apiName: "MLOpsInferenceAPI",
+      description: "HTTP API for image inference requests",
+    });
+
+    // Create Lambda Integration
+    const lambdaIntegration = new integrations.HttpLambdaIntegration(
+      "InferenceLambdaIntegration",
+      inferenceLambda
+    );
+
+    // Create API Route for inference
+    httpApi.addRoutes({
+      path: "/predict",
+      methods: [apigw.HttpMethod.POST],
+      integration: lambdaIntegration,
+    });
+
+    // Output the API URL
+    new cdk.CfnOutput(this, "APIEndpoint", {
+      value: httpApi.apiEndpoint,
+      description: "HTTP API Endpoint for inference",
+    });
 
   }
 }
