@@ -90,7 +90,7 @@ export class MlopsInfraStack extends cdk.Stack {
     const inferenceLambda = new lambda.Function(this, "InferenceLambda", {
       runtime: lambda.Runtime.PYTHON_3_9,
       code: lambda.Code. fromEcrImage(repository, {tag: "lambda"}), 
-      handler: "predict.lambda_handler", 
+      handler: lambda.Handler.FROM_IMAGE, 
       environment: {
         MODEL_BUCKET_NAME: modelBucket.bucketName, 
       },
