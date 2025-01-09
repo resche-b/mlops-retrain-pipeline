@@ -161,8 +161,8 @@ export class MlopsInfraStack extends cdk.Stack {
     // Grant CloudFront access to S3 bucket
     frontendBucket.addToResourcePolicy(
       new iam.PolicyStatement({
-        actions: ["s3:GetObject"],
-        resources: [frontendBucket.arnForObjects("*")],
+        actions: ["s3:ListBucket", "s3:GetObject"],
+        resources: [frontendBucket.bucketArn, `${frontendBucket.bucketArn}/*`],
         principals: [
           new iam.CanonicalUserPrincipal(
             cloudfrontOAI.cloudFrontOriginAccessIdentityS3CanonicalUserId
