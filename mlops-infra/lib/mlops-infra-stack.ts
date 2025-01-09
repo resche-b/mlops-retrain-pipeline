@@ -87,27 +87,27 @@ export class MlopsInfraStack extends cdk.Stack {
 
      
     // Lambda Function for inference
-    const inferenceLambda = new lambda.Function(this, "InferenceLambda", {
-      runtime: lambda.Runtime.FROM_IMAGE,
-      code: lambda.Code. fromEcrImage(repository, {tag: "lambda"}), 
-      handler: lambda.Handler.FROM_IMAGE, 
-      environment: {
-        MODEL_BUCKET_NAME: modelBucket.bucketName, 
-      },
-      memorySize: 3000, 
-      timeout: cdk.Duration.seconds(60), 
-    });
+    // const inferenceLambda = new lambda.Function(this, "InferenceLambda", {
+    //   runtime: lambda.Runtime.FROM_IMAGE,
+    //   code: lambda.Code. fromEcrImage(repository, {tag: "lambda"}), 
+    //   handler: lambda.Handler.FROM_IMAGE, 
+    //   environment: {
+    //     MODEL_BUCKET_NAME: modelBucket.bucketName, 
+    //   },
+    //   memorySize: 3000, 
+    //   timeout: cdk.Duration.seconds(60), 
+    // });
 
-    // IAM Permissions for Lambda to access S3 bucket
-    inferenceLambda.addToRolePolicy(
-      new iam.PolicyStatement({
-        actions: ["s3:ListBucket", "s3:GetObject"],
-        resources: [
-          modelBucket.bucketArn,
-          `${modelBucket.bucketArn}/*`,
-        ],
-      })
-    );
+    // // IAM Permissions for Lambda to access S3 bucket
+    // inferenceLambda.addToRolePolicy(
+    //   new iam.PolicyStatement({
+    //     actions: ["s3:ListBucket", "s3:GetObject"],
+    //     resources: [
+    //       modelBucket.bucketArn,
+    //       `${modelBucket.bucketArn}/*`,
+    //     ],
+    //   })
+    // );
 
   }
 }
