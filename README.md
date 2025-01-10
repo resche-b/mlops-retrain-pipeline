@@ -12,6 +12,10 @@ This project demonstrates an end-to-end MLOps workflow, streamlining and automat
 - ☁️ **S3 Integration**: Stores models for future inference tasks.
 - ⚙️ **Efficient Resource Management**: Built on AWS's serverless and scalable services to optimize cost and performance.
 
+## 🌍 Live Deployment
+
+Check out the live application here: [Live Demo](https://d3bnlqzkqhdpm2.cloudfront.net/)
+
 ## 🛠️ Architecture Overview
 
 1. **GitHub Actions**: Automates the CI/CD workflow.
