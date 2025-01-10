@@ -26,7 +26,7 @@ This project demonstrates an end-to-end MLOps workflow, streamlining and automat
 ## 🧰 Technologies Used
 
 - 🖥️ **AWS Services**: ECS Fargate, S3, ECR, CloudFront, CDK
-- 📝 **Programming Languages**: TypeScript (AWS CDK), Python (ML Model), JavaScript/TypeScript (React Frontend)
+- 📝 **Programming Languages**: TypeScript (AWS CDK), Python (ML Model), JavaScript (React Frontend)
 - ⚙️ **CI/CD**: GitHub Actions
 - 📊 **Dataset**: CIFAR
 
