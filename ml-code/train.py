@@ -146,4 +146,4 @@ def train_model(epochs=10):
 # **Main Function**
 if __name__ == "__main__":
     log_message("Starting training in cloud environment...")
-    train_model(epochs=50)
+    train_model(epochs=30)

@@ -76,8 +76,8 @@ jobs:
           AWS_DEFAULT_REGION: us-east-1
         run: |
           # Define ECS cluster and task definition
-          ECS_CLUSTER_NAME="MlopsInfraStack-EcsCluster97242B84-rv2ICQj10JF2"  # Your ECS cluster name
-          ECS_TASK_DEFINITION="MlopsInfraStackTaskDefDC2C1B7E"  # Your ECS task definition ARN
+          ECS_CLUSTER_NAME="MlopsInfraStack-EcsCluster97242B84-rv2ICQj10JF2"
+          ECS_TASK_DEFINITION="MlopsInfraStackTaskDefDC2C1B7E"
 
           # Define the network configuration with subnets and security groups
           NETWORK_CONFIGURATION="awsvpcConfiguration={subnets=[subnet-0f375205e758a7911,subnet-0110245c30dd05bfc,subnet-00638b2c72ec18d6b,subnet-08ae089f4905f0b9a,subnet-08cb823ffe3bb48d4,subnet-0aa3e1ca8b616b370],securityGroups=[sg-020f517716c8df28d],assignPublicIp=ENABLED}"
