@@ -21,5 +21,5 @@ COPY requirements.txt ./requirements.txt
 # Install necessary Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Entry point for your container (run the training script)
+# Entry point for container (run the training script)
 CMD ["python3", "train_cloud.py"]
